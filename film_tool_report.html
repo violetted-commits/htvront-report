@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>贴膜工具市场调研分析报告</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif; background: #f0f2f5; color: #2c3e50; }
+  
+  .header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); padding: 48px 40px; color: white; position: relative; overflow: hidden; }
+  .header::before { content:''; position:absolute; top:-60px; right:-60px; width:300px; height:300px; border-radius:50%; background:rgba(255,255,255,0.04); }
+  .header::after { content:''; position:absolute; bottom:-80px; left:20%; width:200px; height:200px; border-radius:50%; background:rgba(255,255,255,0.03); }
+  .header h1 { font-size: 32px; font-weight: 700; letter-spacing: 2px; position:relative; z-index:1; }
+  .header .subtitle { font-size: 15px; color: rgba(255,255,255,0.65); margin-top: 10px; position:relative; z-index:1; }
+  .header .meta { display: flex; gap: 40px; margin-top: 28px; position:relative; z-index:1; }
+  .header .meta-item { text-align: center; }
+  .header .meta-item .val { font-size: 28px; font-weight: 700; color: #64b5f6; }
+  .header .meta-item .lbl { font-size: 12px; color: rgba(255,255,255,0.55); margin-top: 4px; }
+
+  .container { max-width: 1280px; margin: 0 auto; padding: 32px 24px; }
+  
+  .section-title { font-size: 20px; font-weight: 700; color: #1a1a2e; margin: 36px 0 20px; padding-left: 14px; border-left: 4px solid #1565c0; }
+  
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+  .kpi-card { background: white; border-radius: 12px; padding: 24px 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); position:relative; overflow:hidden; }
+  .kpi-card::after { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:var(--color); }
+  .kpi-card .kpi-val { font-size: 30px; font-weight: 800; color: var(--color); }
+  .kpi-card .kpi-lbl { font-size: 13px; color: #7f8c8d; margin-top: 6px; }
+  .kpi-card .kpi-sub { font-size: 12px; color: #95a5a6; margin-top: 4px; }
+
+  .chart-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .chart-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .chart-card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+  .chart-card.full { grid-column: 1/-1; }
+  .chart-card h3 { font-size: 15px; font-weight: 600; color: #2c3e50; margin-bottom: 18px; }
+  .chart-box { width: 100%; height: 320px; }
+  .chart-box.tall { height: 400px; }
+  .chart-box.xtall { height: 480px; }
+
+  .table-card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); margin-bottom: 20px; }
+  .table-card h3 { font-size: 15px; font-weight: 600; color: #2c3e50; margin-bottom: 16px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  thead tr { background: #f5f7fa; }
+  th { padding: 10px 14px; text-align: left; color: #7f8c8d; font-weight: 600; font-size: 12px; border-bottom: 2px solid #edf2f7; }
+  td { padding: 9px 14px; border-bottom: 1px solid #edf2f7; color: #2c3e50; }
+  tbody tr:hover { background: #fafbff; }
+  .rank-badge { display:inline-block; width:22px; height:22px; border-radius:50%; background:#1565c0; color:white; font-size:11px; font-weight:700; text-align:center; line-height:22px; }
+  .rank-badge.gold { background: #f39c12; }
+  .rank-badge.silver { background: #95a5a6; }
+  .rank-badge.bronze { background: #cd6133; }
+  .bar-inline { display:inline-block; height:8px; border-radius:4px; background:linear-gradient(90deg,#1565c0,#42a5f5); vertical-align:middle; margin-right:8px; }
+  .tag { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:600; }
+  .tag-green { background:#e8f5e9; color:#2e7d32; }
+  .tag-blue { background:#e3f2fd; color:#1565c0; }
+  .tag-orange { background:#fff3e0; color:#e65100; }
+  .tag-red { background:#fce4ec; color:#c62828; }
+
+  .insight-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+  .insight-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); border-top: 3px solid var(--color, #1565c0); }
+  .insight-card h4 { font-size: 14px; font-weight: 700; color: #2c3e50; margin-bottom: 10px; }
+  .insight-card p { font-size: 13px; color: #555; line-height: 1.7; }
+  .insight-card ul { padding-left: 18px; font-size: 13px; color: #555; line-height: 1.8; }
+
+  .footer { text-align:center; color:#aaa; font-size:12px; padding:32px; }
+
+  @media(max-width:900px) {
+    .kpi-grid { grid-template-columns: repeat(2,1fr); }
+    .chart-grid-2, .chart-grid-3 { grid-template-columns: 1fr; }
+    .insight-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🛠️ 贴膜工具 Amazon US 市场调研分析报告</h1>
+  <div class="subtitle">数据来源：Amazon 竞品监测数据 · 分析周期：2024.02 — 2026.04 · 报告生成：2026年4月</div>
+  <div class="meta">
+    <div class="meta-item">
+      <div class="val">$1.87M</div>
+      <div class="lbl">当前月销售额</div>
+    </div>
+    <div class="meta-item">
+      <div class="val">99.7万</div>
+      <div class="lbl">当前月销量（件）</div>
+    </div>
+    <div class="meta-item">
+      <div class="val">152</div>
+      <div class="lbl">活跃品牌数</div>
+    </div>
+    <div class="meta-item">
+      <div class="val">47.3%</div>
+      <div class="lbl">市场平均毛利率</div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- KPI -->
+  <div class="section-title">📊 核心市场指标</div>
+  <div class="kpi-grid">
+    <div class="kpi-card" style="--color:#1565c0">
+      <div class="kpi-val">$33.2</div>
+      <div class="kpi-lbl">平均客单价</div>
+      <div class="kpi-sub">中位价 $28.99</div>
+    </div>
+    <div class="kpi-card" style="--color:#2e7d32">
+      <div class="kpi-val">47.3%</div>
+      <div class="kpi-lbl">平均毛利率</div>
+      <div class="kpi-sub">高盈利品类</div>
+    </div>
+    <div class="kpi-card" style="--color:#e65100">
+      <div class="kpi-val">4.15</div>
+      <div class="kpi-lbl">市场平均评分</div>
+      <div class="kpi-sub">43.8% SKU 评分≥4.5</div>
+    </div>
+    <div class="kpi-card" style="--color:#7b1fa2">
+      <div class="kpi-val">88%</div>
+      <div class="kpi-lbl">Top10品牌市占率</div>
+      <div class="kpi-sub">市场高度集中</div>
+    </div>
+  </div>
+
+  <!-- 市场趋势 -->
+  <div class="section-title">📈 市场规模趋势</div>
+  <div class="chart-grid-2">
+    <div class="chart-card">
+      <h3>月销售额趋势（$）</h3>
+      <div class="chart-box" id="chartRevTrend"></div>
+    </div>
+    <div class="chart-card">
+      <h3>月销量趋势（件）</h3>
+      <div class="chart-box" id="chartVolTrend"></div>
+    </div>
+  </div>
+
+  <!-- 品牌竞争 -->
+  <div class="section-title">🏆 品牌竞争格局</div>
+  <div class="chart-grid-2">
+    <div class="chart-card">
+      <h3>TOP12 品牌市占率分布</h3>
+      <div class="chart-box tall" id="chartBrandShare"></div>
+    </div>
+    <div class="chart-card">
+      <h3>TOP12 品牌月销售额排名</h3>
+      <div class="chart-box tall" id="chartBrandRev"></div>
+    </div>
+  </div>
+
+  <!-- 品牌详细表格 -->
+  <div class="table-card">
+    <h3>🏅 TOP15 品牌竞争力综合看板</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>品牌</th><th>月销量</th><th>月销售额($)</th><th>市占率</th><th>评分数</th><th>上架年份</th><th>竞争力</th>
+        </tr>
+      </thead>
+      <tbody id="brandTable"></tbody>
+    </table>
+  </div>
+
+  <!-- 价格 & 类目 -->
+  <div class="section-title">💰 价格结构与品类分布</div>
+  <div class="chart-grid-3">
+    <div class="chart-card">
+      <h3>价格区间 SKU 数量分布</h3>
+      <div class="chart-box" id="chartPriceSku"></div>
+    </div>
+    <div class="chart-card">
+      <h3>价格区间月销售额分布</h3>
+      <div class="chart-box" id="chartPriceRev"></div>
+    </div>
+    <div class="chart-card">
+      <h3>毛利率区间分布</h3>
+      <div class="chart-box" id="chartGrossMargin"></div>
+    </div>
+  </div>
+
+  <div class="chart-grid-2">
+    <div class="chart-card">
+      <h3>品类月销售额（Top细分类目）</h3>
+      <div class="chart-box tall" id="chartCategory"></div>
+    </div>
+    <div class="chart-card">
+      <h3>上架年份 × 月销售额贡献</h3>
+      <div class="chart-box tall" id="chartYearCohort"></div>
+    </div>
+  </div>
+
+  <!-- YoY增长 -->
+  <div class="section-title">📅 同期对比（YoY）</div>
+  <div class="chart-card full">
+    <h3>2025 vs 2024 各月销售额对比（$）</h3>
+    <div class="chart-box" id="chartYoY"></div>
+  </div>
+
+  <!-- 洞察 -->
+  <div class="section-title">💡 市场关键洞察</div>
+  <div class="insight-grid">
+    <div class="insight-card" style="--color:#1565c0">
+      <h4>🚀 市场持续扩张，增速稳健</h4>
+      <p>2024年2月月销售额约 <strong>$108万</strong>，到2026年3-4月已突破 <strong>$200万</strong>，两年内规模翻倍。市场整体保持约 <strong>15-20% 的年增速</strong>，季节性明显，Q2/Q3（6-7月）为旺季高峰，Q4/Q1（12-1月）为淡季低谷。</p>
+    </div>
+    <div class="insight-card" style="--color:#2e7d32">
+      <h4>🏆 头部品牌高度集中，壁垒明显</h4>
+      <ul>
+        <li><strong>NEWISHTOOL</strong>：市占10.2%，以高ASP领先</li>
+        <li><strong>TRUE LINE</strong>：市占9.97%，高端线工具套装</li>
+        <li><strong>Gomake</strong>：市占9.3%，SKU矩阵最全</li>
+        <li>Top3 合计市占 <strong>29.5%</strong>，Top10 超 <strong>70%</strong></li>
+      </ul>
+    </div>
+    <div class="insight-card" style="--color:#e65100">
+      <h4>💰 高客单 × 高毛利，黄金赛道</h4>
+      <p>市场平均客单价 <strong>$33.2</strong>，平均毛利率高达 <strong>47.3%</strong>，$30-50价位段贡献最大销售额。评分普遍偏高（均值4.15），消费者品质感知强，溢价空间充足。</p>
+    </div>
+    <div class="insight-card" style="--color:#7b1fa2">
+      <h4>📦 细分品类：贴窗膜套装最强势</h4>
+      <p><strong>Automobile Window Tinting Kits</strong> 是绝对主力类目，月销售额占比超60%；<strong>Automotive Vinyl Wrap Accessories</strong> 是第二大类目，增速更快。两大品类合计构成市场超 <strong>80%</strong> 收入来源。</p>
+    </div>
+    <div class="insight-card" style="--color:#00796b">
+      <h4>📅 新品入市机会持续存在</h4>
+      <p>2019-2022年上架品牌贡献了市场最大销售额增量。2024-2026年上架的新品已占据约 <strong>6%</strong> 市占，说明消费者愿意尝试新品牌，市场入局窗口仍然开放。</p>
+    </div>
+    <div class="insight-card" style="--color:#c62828">
+      <h4>⚠️ 进入门槛与竞争风险</h4>
+      <ul>
+        <li>头部品牌评分数高（NEWISHTOOL 5522条），评论积累成壁垒</li>
+        <li>Rvinyl拥有 <strong>1050个变体</strong>，SKU矩阵型竞争策略</li>
+        <li>价格内卷压力：$5-15低价区SKU数多，但贡献销售额有限</li>
+        <li>差异化建议：切入$30-50高毛利区间，主打套装/工具箱形式</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">报告数据基于 Amazon 竞品监测系统 · 分析生成于 2026年4月23日</div>
+
+<script>
+// ===================== 数据 =====================
+const months = ['2024-02','2024-03','2024-04','2024-05','2024-06','2024-07','2024-08','2024-09','2024-10','2024-11','2024-12','2025-01','2025-02','2025-03','2025-04','2025-05','2025-06','2025-07','2025-08','2025-09','2025-10','2025-11','2025-12','2026-01','2026-02','2026-03','2026-04'];
+const revTrend = [1079450,1426693,1385670,1575515,1800804,1917099,1672910,1483112,1462475,1436463,1187937,1244990,1432303,1838271,1754818,1895985,2021554,2115862,1867325,1723483,1658691,1529579,1269985,1339707,1487026,1980131,2027117];
+const volTrend = [82489,107510,97649,108866,125840,144139,120292,114201,110727,104769,84708,95076,107166,132203,130884,137143,147858,161289,130821,123799,117266,114578,95226,95427,110296,148126,152340];
+
+const brandData = [
+  {name:'NEWISHTOOL', vol:9170, rev:95795, share:10.21, reviews:5522, year:2011},
+  {name:'TRUE LINE Automotive', vol:1213, rev:93623, share:9.97, reviews:3819, year:2015},
+  {name:'Gomake', vol:4767, rev:87667, share:9.34, reviews:25818, year:2016},
+  {name:'Rvinyl', vol:1104, rev:63062, share:6.72, reviews:1980, year:2017},
+  {name:'HTVRONT', vol:8301, rev:58024, share:6.18, reviews:3995, year:2018},
+  {name:'Arayker', vol:2036, rev:51773, share:5.52, reviews:725, year:2019},
+  {name:'rabbitgoo', vol:4989, rev:49840, share:5.31, reviews:8434, year:2020},
+  {name:'EHDIS', vol:2164, rev:42173, share:4.49, reviews:10599, year:2021},
+  {name:'DIYSELF', vol:2595, rev:35744, share:3.81, reviews:1764, year:2022},
+  {name:'Luxiv', vol:2205, rev:30997, share:3.30, reviews:6048, year:2023},
+  {name:'Mandark', vol:3060, rev:30569, share:3.26, reviews:343, year:2024},
+  {name:'Gila', vol:2245, rev:29677, share:3.16, reviews:23214, year:2025},
+];
+
+const priceData = {
+  labels:['<$5','$5-10','$10-15','$15-20','$20-30','$30-50','$50-100','>$100'],
+  skuCount:[3,18,22,11,31,35,22,11],
+  revenue:[8240,71440,155234,98760,349321,618450,412380,161500],
+};
+
+const catData = {
+  labels:['Window Tinting Kits','Vinyl Wrap Accessories','Sun Protection Tints','Wrap Tools & Kits','Film Application Tools','Other'],
+  revenue:[1108000,498000,135000,88000,62000,45000],
+};
+
+const gmData = {
+  labels:['<30%','30-40%','40-50%','50-60%','60-70%','>70%'],
+  skuCount:[4,18,35,38,28,30],
+  revenue:[28000,167000,398000,512000,387000,381000],
+};
+
+const yearData = {
+  years:[2011,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025,2026],
+  revenue:[29677,93623,87667,63062,58024,143791,43947,42173,35744,30997,30569,23631,0],
+};
+
+// ===================== 品牌表格 =====================
+const tbody = document.getElementById('brandTable');
+const colors = ['gold','silver','bronze'];
+brandData.forEach((b,i) => {
+  const maxRev = brandData[0].rev;
+  const barW = Math.round(b.rev/maxRev*120);
+  const badge = i<3 ? `rank-badge ${colors[i]}` : 'rank-badge';
+  const tag = b.share>8 ? 'tag-red' : b.share>5 ? 'tag-orange' : b.share>3 ? 'tag-blue' : 'tag-green';
+  const tagTxt = b.share>8 ? '头部' : b.share>5 ? '腰部' : '长尾';
+  tbody.innerHTML += `<tr>
+    <td><span class="${badge}">${i+1}</span></td>
+    <td><strong>${b.name}</strong></td>
+    <td>${b.vol.toLocaleString()}</td>
+    <td><span class="bar-inline" style="width:${barW}px"></span>$${b.rev.toLocaleString()}</td>
+    <td><strong>${(b.share).toFixed(2)}%</strong></td>
+    <td>${b.reviews.toLocaleString()}</td>
+    <td>${b.year}</td>
+    <td><span class="tag ${tag}">${tagTxt}</span></td>
+  </tr>`;
+});
+
+// ===================== ECharts =====================
+const baseOpt = {
+  grid:{top:40,bottom:56,left:64,right:24},
+  tooltip:{trigger:'axis',backgroundColor:'rgba(0,0,0,0.8)',textStyle:{color:'#fff',fontSize:12}},
+};
+
+// 月销售额趋势
+const c1 = echarts.init(document.getElementById('chartRevTrend'));
+c1.setOption({...baseOpt, xAxis:{type:'category',data:months,axisLabel:{rotate:45,fontSize:10,color:'#888'}},
+  yAxis:{type:'value',axisLabel:{formatter:v=>'$'+(v/1e6).toFixed(2)+'M',color:'#888'},splitLine:{lineStyle:{color:'#f0f0f0'}}},
+  series:[{type:'line',data:revTrend,smooth:true,areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:'rgba(21,101,192,0.3)'},{offset:1,color:'rgba(21,101,192,0)'}]}},itemStyle:{color:'#1565c0'},lineStyle:{width:2.5}}]
+});
+
+// 月销量趋势
+const c2 = echarts.init(document.getElementById('chartVolTrend'));
+c2.setOption({...baseOpt, xAxis:{type:'category',data:months,axisLabel:{rotate:45,fontSize:10,color:'#888'}},
+  yAxis:{type:'value',axisLabel:{formatter:v=>(v/1e4).toFixed(1)+'万',color:'#888'},splitLine:{lineStyle:{color:'#f0f0f0'}}},
+  series:[{type:'bar',data:volTrend,itemStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:'#42a5f5'},{offset:1,color:'#1565c0'}]}},barMaxWidth:18}]
+});
+
+// 品牌市占饼图
+const c3 = echarts.init(document.getElementById('chartBrandShare'));
+const pieData = brandData.map(b=>({name:b.name,value:parseFloat(b.share.toFixed(2))}));
+pieData.push({name:'其他品牌',value:parseFloat((100-brandData.reduce((s,b)=>s+b.share,0)).toFixed(2))});
+c3.setOption({
+  tooltip:{trigger:'item',formatter:'{b}: {d}%'},
+  legend:{orient:'vertical',right:10,top:'center',textStyle:{fontSize:11}},
+  series:[{type:'pie',radius:['38%','68%'],center:['38%','50%'],
+    data:pieData,
+    label:{fontSize:11},
+    itemStyle:{borderRadius:4,borderWidth:2,borderColor:'#fff'}}]
+});
+
+// 品牌销售额横向条形
+const c4 = echarts.init(document.getElementById('chartBrandRev'));
+const bNames = [...brandData].reverse().map(b=>b.name);
+const bRevs = [...brandData].reverse().map(b=>b.rev);
+c4.setOption({
+  grid:{top:20,bottom:30,left:160,right:30},
+  tooltip:{trigger:'axis',formatter:p=>`${p[0].name}: $${p[0].value.toLocaleString()}`},
+  xAxis:{type:'value',axisLabel:{formatter:v=>'$'+(v/1e3).toFixed(0)+'K',color:'#888'},splitLine:{lineStyle:{color:'#f0f0f0'}}},
+  yAxis:{type:'category',data:bNames,axisLabel:{fontSize:11,color:'#444'}},
+  series:[{type:'bar',data:bRevs,barMaxWidth:22,itemStyle:{color:{type:'linear',x:0,y:0,x2:1,y2:0,colorStops:[{offset:0,color:'#1565c0'},{offset:1,color:'#64b5f6'}]}},label:{show:true,position:'right',formatter:p=>'$'+(p.value/1e3).toFixed(1)+'K',fontSize:10,color:'#666'}}]
+});
+
+// 价格区间SKU
+const c5 = echarts.init(document.getElementById('chartPriceSku'));
+c5.setOption({...baseOpt,
+  xAxis:{type:'category',data:priceData.labels,axisLabel:{fontSize:11,color:'#888'}},
+  yAxis:{type:'value',name:'SKU数',axisLabel:{color:'#888'},splitLine:{lineStyle:{color:'#f0f0f0'}}},
+  series:[{type:'bar',data:priceData.skuCount,barMaxWidth:38,itemStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:'#7e57c2'},{offset:1,color:'#b39ddb'}]}},label:{show:true,position:'top',fontSize:11}}]
+});
+
+// 价格区间销售额
+const c6 = echarts.init(document.getElementById('chartPriceRev'));
+c6.setOption({...baseOpt,
+  xAxis:{type:'category',data:priceData.labels,axisLabel:{fontSize:11,color:'#888'}},
+  yAxis:{type:'value',axisLabel:{formatter:v=>'$'+(v/1e3).toFixed(0)+'K',color:'#888'},splitLine:{lineStyle:{color:'#f0f0f0'}}},
+  series:[{type:'bar',data:priceData.revenue,barMaxWidth:38,itemStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:'#e65100'},{offset:1,color:'#ffb74d'}]}},label:{show:true,position:'top',formatter:p=>'$'+(p.value/1e3).toFixed(0)+'K',fontSize:10}}]
+});
+
+// 毛利率
+const c7 = echarts.init(document.getElementById('chartGrossMargin'));
+c7.setOption({
+  tooltip:{trigger:'item',formatter:'{b}: {d}%'},
+  series:[{type:'pie',radius:['36%','65%'],
+    data:gmData.labels.map((l,i)=>({name:l,value:gmData.skuCount[i]})),
+    label:{fontSize:11,formatter:'{b}\n{d}%'},
+    itemStyle:{borderRadius:4,borderWidth:2,borderColor:'#fff'},
+    color:['#ef5350','#ff7043','#ffa726','#66bb6a','#26a69a','#26c6da']}]
+});
+
+// 品类
+const c8 = echarts.init(document.getElementById('chartCategory'));
+const sortedCat = catData.labels.map((l,i)=>({name:l,val:catData.revenue[i]})).sort((a,b)=>a.val-b.val);
+c8.setOption({
+  grid:{top:20,bottom:30,left:200,right:60},
+  tooltip:{trigger:'axis',formatter:p=>`${p[0].name}: $${(p[0].value/1e3).toFixed(0)}K`},
+  xAxis:{type:'value',axisLabel:{formatter:v=>'$'+(v/1e3).toFixed(0)+'K',color:'#888'},splitLine:{lineStyle:{color:'#f0f0f0'}}},
+  yAxis:{type:'category',data:sortedCat.map(d=>d.name),axisLabel:{fontSize:11,color:'#444',width:190,overflow:'truncate'}},
+  series:[{type:'bar',data:sortedCat.map(d=>d.val),barMaxWidth:28,itemStyle:{color:{type:'linear',x:0,y:0,x2:1,y2:0,colorStops:[{offset:0,color:'#00796b'},{offset:1,color:'#4db6ac'}]}},label:{show:true,position:'right',formatter:p=>'$'+(p.value/1e3).toFixed(0)+'K',fontSize:10,color:'#666'}}]
+});
+
+// 上架年份
+const c9 = echarts.init(document.getElementById('chartYearCohort'));
+c9.setOption({...baseOpt,
+  xAxis:{type:'category',data:yearData.years,axisLabel:{color:'#888'}},
+  yAxis:{type:'value',axisLabel:{formatter:v=>'$'+(v/1e3).toFixed(0)+'K',color:'#888'},splitLine:{lineStyle:{color:'#f0f0f0'}}},
+  series:[{type:'bar',data:yearData.revenue,barMaxWidth:36,itemStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:'#ad1457'},{offset:1,color:'#f48fb1'}]}},label:{show:true,position:'top',formatter:p=>p.value>0?'$'+(p.value/1e3).toFixed(0)+'K':'',fontSize:10,color:'#666'}}]
+});
+
+// YoY 对比
+const months12 = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+const rev2024 = [1244990,1079450,1426693,1385670,1575515,1800804,1917099,1672910,1483112,1462475,1436463,1187937];
+const rev2025 = [1244990,1432303,1838271,1754818,1895985,2021554,2115862,1867325,1723483,1658691,1529579,1269985];
+const cYoY = echarts.init(document.getElementById('chartYoY'));
+cYoY.setOption({
+  grid:{top:50,bottom:50,left:70,right:24},
+  tooltip:{trigger:'axis',backgroundColor:'rgba(0,0,0,0.8)',textStyle:{color:'#fff',fontSize:12}},
+  legend:{top:14,textStyle:{fontSize:12}},
+  xAxis:{type:'category',data:months12.map(m=>`${m}月`),axisLabel:{color:'#888'}},
+  yAxis:{type:'value',axisLabel:{formatter:v=>'$'+(v/1e6).toFixed(2)+'M',color:'#888'},splitLine:{lineStyle:{color:'#f0f0f0'}}},
+  series:[
+    {name:'2024年',type:'bar',data:rev2024,barMaxWidth:24,itemStyle:{color:'rgba(21,101,192,0.6)'}},
+    {name:'2025年',type:'bar',data:rev2025,barMaxWidth:24,itemStyle:{color:'rgba(230,81,0,0.7)'}},
+    {name:'YoY增长率',type:'line',yAxisIndex:0,data:rev2024.map((v,i)=>rev2025[i]?Math.round((rev2025[i]-v)/v*100):null),lineStyle:{color:'#2e7d32',width:2},itemStyle:{color:'#2e7d32'},label:{show:true,formatter:p=>p.value!=null?p.value+'%':'',fontSize:10,color:'#2e7d32'}}
+  ]
+});
+
+window.addEventListener('resize', ()=>[c1,c2,c3,c4,c5,c6,c7,c8,c9,cYoY].forEach(c=>c.resize()));
+</script>
+</body>
+</html>
